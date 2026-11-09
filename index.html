@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FitTrack - Workout</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --bg-dark: #121511;
+      --card-bg: #1c211b;
+      --card-hover: #242b23;
+      --accent-green: #b4f34d;
+      --accent-pill: #3b4d24;
+      --text-muted: #8b9588;
+      --border-color: #262c23;
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 90px;
+    }
+
+    .container {
+      max-width: 900px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 32px 20px 24px;
+    }
+
+    /* Header */
+    .header h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+    }
+
+    .header p {
+      color: var(--text-muted);
+      font-size: 0.98rem;
+      margin-bottom: 28px;
+    }
+
+    .section-label {
+      color: var(--accent-green);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+    }
+
+    /* Training Cards List */
+    .plan-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .plan-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.15s ease;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .plan-card:hover {
+      background: var(--card-hover);
+      transform: translateY(-1px);
+    }
+
+    .plan-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+    }
+
+    /* Icon badge background tints */
+    .icon-strength { background: rgba(180, 243, 77, 0.12); color: #b4f34d; }
+    .icon-cardio   { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
+    .icon-boxing   { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
+    .icon-core     { background: rgba(6, 182, 212, 0.15); color: #06b6d4; }
+    .icon-calis    { background: rgba(217, 70, 239, 0.15); color: #d946ef; }
+
+    .plan-details h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .plan-details span {
+      font-size: 0.86rem;
+      color: var(--text-muted);
+    }
+
+    .chevron {
+      color: #4b5563;
+      font-size: 0.9rem;
+    }
+
+    /* Weekly Goal Card */
+    .goal-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 22px;
+      margin-top: 10px;
+    }
+
+    .goal-header {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #2a3128;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .progress-fill {
+      width: 0%; /* update as needed */
+      height: 100%;
+      background: var(--accent-green);
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    .goal-caption {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 72px;
+      background: #0f120e;
+      border-top: 1px solid #1c211b;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 0 16px;
+      z-index: 100;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+
+    .nav-item i {
+      font-size: 1.25rem;
+    }
+
+    /* Active pill on Workout tab */
+    .nav-item.active {
+      color: #ffffff;
+    }
+
+    .nav-item.active .nav-icon-wrapper {
+      background: var(--accent-pill);
+      color: var(--accent-green);
+      padding: 4px 18px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header class="header">
+      <h1>Workout</h1>
+      <p>Train hard. Get stronger.</p>
+    </header>
+
+    <div class="section-label">Your Training Plans</div>
+
+    <section class="plan-list">
+      <div class="plan-card">
+        <div class="plan-left">
+          <div class="icon-box icon-strength"><i class="fa-solid fa-dumbbell"></i></div>
+          <div class="plan-details">
+            <h3>Strength Training</h3>
+            <span>45 min &bull; Full body</span>
+          </div>
+        </div>
+        <i class="fa-solid fa-chevron-right chevron"></i>
+      </div>
+
+      <div class="plan-card">
+        <div class="plan-left">
+          <div class="icon-box icon-cardio"><i class="fa-solid fa-person-running"></i></div>
+          <div class="plan-details">
+            <h3>Cardio &amp; Running</h3>
+            <span>30 min &bull; Endurance</span>
+          </div>
+        </div>
+        <i class="fa-solid fa-chevron-right chevron"></i>
+      </div>
+
+      <div class="plan-card">
+        <div class="plan-left">
+          <div class="icon-box icon-boxing"><i class="fa-solid fa-hand-fist"></i></div>
+          <div class="plan-details">
+            <h3>Boxing</h3>
+            <span>25 min &bull; Conditioning</span>
+          </div>
+        </div>
+        <i class="fa-solid fa-chevron-right chevron"></i>
+      </div>
+
+      <div class="plan-card">
+        <div class="plan-left">
+          <div class="icon-box icon-core"><i class="fa-solid fa-child-reaching"></i></div>
+          <div class="plan-details">
+            <h3>Core &amp; Abs</h3>
+            <span>20 min &bull; Core strength</span>
+          </div>
+        </div>
+        <i class="fa-solid fa-chevron-right chevron"></i>
+      </div>
+
+      <div class="plan-card">
+        <div class="plan-left">
+          <div class="icon-box icon-calis"><i class="fa-solid fa-person-snowboarding"></i></div>
+          <div class="plan-details">
+            <h3>Calisthenics</h3>
+            <span>35 min &bull; Bodyweight</span>
+          </div>
+        </div>
+        <i class="fa-solid fa-chevron-right chevron"></i>
+      </div>
+    </section>
+
+    <!-- Weekly Goal -->
+    <div class="goal-card">
+      <div class="goal-header">Weekly goal</div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: 0%;"></div>
+      </div>
+      <div class="goal-caption">0 of 5 workouts completed</div>
+    </div>
+  </div>
+
+  <!-- Bottom Bar -->
+  <nav class="bottom-nav">
+    <a href="#home" class="nav-item">
+      <i class="fa-solid fa-house"></i>
+      <span>Home</span>
+    </a>
+    <a href="#workout" class="nav-item active">
+      <div class="nav-icon-wrapper">
+        <i class="fa-solid fa-dumbbell"></i>
+      </div>
+      <span>Workout</span>
+    </a>
+    <a href="#activity" class="nav-item">
+      <i class="fa-solid fa-chart-simple"></i>
+      <span>Activity</span>
+    </a>
+    <a href="#profile" class="nav-item">
+      <i class="fa-regular fa-user"></i>
+      <span>Profile</span>
+    </a>
+  </nav>
+
+</body>
+</html>
