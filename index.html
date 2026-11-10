@@ -3,18 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FitTrack - Workout</title>
+  <title>FitTrack</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
     :root {
-      --bg-dark: #121511;
-      --card-bg: #1c211b;
-      --card-hover: #242b23;
+      --bg-dark: #0e120d;
+      --card-bg: #181d16;
+      --card-hover: #1f251d;
       --accent-green: #b4f34d;
-      --accent-pill: #3b4d24;
-      --text-muted: #8b9588;
-      --border-color: #262c23;
-      --radius: 14px;
+      --accent-pill: #34431e;
+      --text-muted: #7e8a7b;
+      --text-dim: #545e52;
+      --border-color: #242921;
+      --radius-sm: 10px;
+      --radius-md: 14px;
+      --radius-lg: 18px;
     }
 
     * {
@@ -30,40 +33,110 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      padding-bottom: 90px;
+      padding-bottom: 96px;
+      user-select: none;
     }
 
     .container {
-      max-width: 900px;
+      max-width: 980px;
       width: 100%;
       margin: 0 auto;
-      padding: 32px 20px 24px;
+      padding: 28px 24px 20px;
     }
 
-    /* Header */
-    .header h1 {
-      font-size: 2.2rem;
-      font-weight: 700;
-      letter-spacing: -0.5px;
-      margin-bottom: 6px;
+    .view {
+      display: none;
     }
 
-    .header p {
-      color: var(--text-muted);
-      font-size: 0.98rem;
-      margin-bottom: 28px;
+    .view.active {
+      display: block;
     }
 
-    .section-label {
+    /* Sub-headers and brand tags */
+    .brand-tag {
       color: var(--accent-green);
-      font-size: 0.8rem;
+      font-size: 0.76rem;
       font-weight: 700;
-      letter-spacing: 1px;
-      margin-bottom: 14px;
+      letter-spacing: 1.5px;
+      margin-bottom: 12px;
       text-transform: uppercase;
     }
 
-    /* Training Cards List */
+    .page-title {
+      font-size: 2.15rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .page-subtitle {
+      color: var(--text-muted);
+      font-size: 0.96rem;
+      margin-bottom: 24px;
+    }
+
+    .section-label {
+      color: #ffffff;
+      font-size: 1.15rem;
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+
+    .section-label.accent {
+      color: var(--accent-green);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    /* ================= HOME VIEW ================= */
+    .progress-banner {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 26px 28px;
+      margin-bottom: 28px;
+    }
+
+    .banner-tag {
+      color: var(--accent-green);
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .banner-title {
+      font-size: 1.45rem;
+      font-weight: 700;
+      margin-bottom: 26px;
+    }
+
+    .banner-metrics {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-right: 20px;
+    }
+
+    .metric-col h4 {
+      font-size: 1.85rem;
+      font-weight: 700;
+      color: var(--accent-green);
+      margin-bottom: 4px;
+    }
+
+    .metric-col span {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* ================= WORKOUT CARDS ================= */
     .plan-list {
       display: flex;
       flex-direction: column;
@@ -76,17 +149,14 @@
       align-items: center;
       justify-content: space-between;
       background: var(--card-bg);
-      border-radius: var(--radius);
+      border-radius: var(--radius-md);
       padding: 16px 20px;
       cursor: pointer;
-      transition: background 0.2s ease, transform 0.15s ease;
-      text-decoration: none;
-      color: inherit;
+      transition: background 0.15s ease;
     }
 
     .plan-card:hover {
       background: var(--card-hover);
-      transform: translateY(-1px);
     }
 
     .plan-left {
@@ -105,7 +175,6 @@
       font-size: 1.15rem;
     }
 
-    /* Icon badge background tints */
     .icon-strength { background: rgba(180, 243, 77, 0.12); color: #b4f34d; }
     .icon-cardio   { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
     .icon-boxing   { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
@@ -115,25 +184,30 @@
     .plan-details h3 {
       font-size: 1.05rem;
       font-weight: 600;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
 
     .plan-details span {
-      font-size: 0.86rem;
+      font-size: 0.85rem;
       color: var(--text-muted);
     }
 
-    .chevron {
-      color: #4b5563;
-      font-size: 0.9rem;
+    .plan-right-icon {
+      color: #3b4238;
+      font-size: 0.95rem;
+    }
+
+    .plan-right-icon.completed {
+      color: var(--accent-green);
+      font-size: 1.35rem;
     }
 
     /* Weekly Goal Card */
     .goal-card {
       background: var(--card-bg);
-      border-radius: var(--radius);
+      border-radius: var(--radius-md);
       padding: 22px;
-      margin-top: 10px;
+      margin-top: 8px;
     }
 
     .goal-header {
@@ -142,17 +216,17 @@
       margin-bottom: 16px;
     }
 
-    .progress-bar {
+    .progress-bar-container {
       width: 100%;
-      height: 8px;
-      background: #2a3128;
+      height: 7px;
+      background: #252b22;
       border-radius: 999px;
       overflow: hidden;
       margin-bottom: 12px;
     }
 
-    .progress-fill {
-      width: 0%; /* update as needed */
+    .progress-bar-fill {
+      width: 0%;
       height: 100%;
       background: var(--accent-green);
       border-radius: 999px;
@@ -164,15 +238,256 @@
       color: var(--text-muted);
     }
 
-    /* Bottom Navigation */
+    /* ================= ACTIVITY VIEW ================= */
+    .activity-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .activity-row {
+      background: var(--card-bg);
+      border-radius: var(--radius-md);
+      padding: 20px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .activity-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 0.98rem;
+      color: #e5e7eb;
+      font-weight: 500;
+    }
+
+    .activity-left i {
+      color: var(--accent-green);
+      font-size: 1.15rem;
+      width: 20px;
+    }
+
+    .activity-value {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .activity-value.highlight {
+      color: var(--accent-green);
+      font-weight: 600;
+    }
+
+    /* ================= PROFILE VIEW ================= */
+    .profile-hero {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 18px 0 34px;
+    }
+
+    .profile-avatar {
+      width: 86px;
+      height: 86px;
+      background: var(--accent-green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #0e120d;
+      font-size: 2.2rem;
+      margin-bottom: 16px;
+    }
+
+    .profile-hero h3 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .profile-hero p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    .profile-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .profile-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 4px;
+      cursor: pointer;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+    }
+
+    .profile-item-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 0.98rem;
+      font-weight: 500;
+      color: #f3f4f6;
+    }
+
+    .profile-item-left i {
+      color: var(--accent-green);
+      font-size: 1.1rem;
+      width: 22px;
+    }
+
+    .profile-chevron {
+      color: #4b5563;
+      font-size: 0.9rem;
+    }
+
+    /* ================= DETAIL VIEW ================= */
+    .detail-nav {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .back-btn {
+      background: none;
+      border: none;
+      color: #ffffff;
+      font-size: 1.25rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      padding: 4px;
+    }
+
+    .detail-nav h2 {
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+
+    .detail-hero {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 40px 20px 32px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+
+    .detail-hero-icon {
+      font-size: 2.8rem;
+    }
+
+    .detail-hero h3 {
+      font-size: 1.35rem;
+      font-weight: 700;
+    }
+
+    .detail-hero p {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+
+    .exercise-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .exercise-item {
+      background: var(--card-bg);
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      font-size: 0.95rem;
+      color: #e2e8f0;
+      transition: background 0.15s ease;
+    }
+
+    .exercise-item:hover {
+      background: var(--card-hover);
+    }
+
+    .exercise-item.done {
+      color: #5c6857;
+      text-decoration: line-through;
+    }
+
+    .checkbox {
+      font-size: 1.25rem;
+      color: #4b5563;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .exercise-item.done .checkbox {
+      color: var(--accent-green);
+    }
+
+    .detail-progress-bar {
+      height: 6px;
+      background: #252b22;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .detail-progress-fill {
+      height: 100%;
+      background: var(--accent-green);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .exercise-count-caption {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 22px;
+    }
+
+    .complete-btn {
+      width: 100%;
+      padding: 15px;
+      border-radius: 999px;
+      border: none;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: not-allowed;
+      background: #232a21;
+      color: #64705f;
+      transition: all 0.2s ease;
+    }
+
+    .complete-btn.enabled {
+      background: var(--accent-green);
+      color: #0f140c;
+      cursor: pointer;
+    }
+
+    /* ================= BOTTOM BAR ================= */
     .bottom-nav {
       position: fixed;
       bottom: 0;
       left: 0;
       right: 0;
       height: 72px;
-      background: #0f120e;
-      border-top: 1px solid #1c211b;
+      background: #0d100d;
+      border-top: 1px solid #1a2018;
       display: flex;
       justify-content: space-around;
       align-items: center;
@@ -189,6 +504,7 @@
       color: var(--text-muted);
       font-size: 0.78rem;
       font-weight: 500;
+      cursor: pointer;
       transition: color 0.2s ease;
     }
 
@@ -196,7 +512,15 @@
       font-size: 1.25rem;
     }
 
-    /* Active pill on Workout tab */
+    .nav-item .nav-icon-wrapper {
+      padding: 4px 18px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease;
+    }
+
     .nav-item.active {
       color: #ffffff;
     }
@@ -204,112 +528,436 @@
     .nav-item.active .nav-icon-wrapper {
       background: var(--accent-pill);
       color: var(--accent-green);
-      padding: 4px 18px;
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <header class="header">
-      <h1>Workout</h1>
-      <p>Train hard. Get stronger.</p>
-    </header>
+  <!-- ================= 1. HOME VIEW ================= -->
+  <div id="home-view" class="view">
+    <div class="container">
+      <div class="brand-tag">FITTRACK</div>
+      <h1 class="page-title">Hello, Champion! 👋</h1>
+      <p class="page-subtitle">Ready to become stronger today?</p>
 
-    <div class="section-label">Your Training Plans</div>
-
-    <section class="plan-list">
-      <div class="plan-card">
-        <div class="plan-left">
-          <div class="icon-box icon-strength"><i class="fa-solid fa-dumbbell"></i></div>
-          <div class="plan-details">
-            <h3>Strength Training</h3>
-            <span>45 min &bull; Full body</span>
+      <div class="progress-banner">
+        <div class="banner-tag">TODAY'S PROGRESS</div>
+        <div class="banner-title">Stay consistent.</div>
+        <div class="banner-metrics">
+          <div class="metric-col">
+            <h4 id="home-calories">450</h4>
+            <span>Calories</span>
+          </div>
+          <div class="metric-col">
+            <h4 id="home-minutes">45</h4>
+            <span>Minutes</span>
+          </div>
+          <div class="metric-col">
+            <h4 id="home-workouts">3</h4>
+            <span>Workouts</span>
           </div>
         </div>
-        <i class="fa-solid fa-chevron-right chevron"></i>
       </div>
 
-      <div class="plan-card">
-        <div class="plan-left">
-          <div class="icon-box icon-cardio"><i class="fa-solid fa-person-running"></i></div>
-          <div class="plan-details">
-            <h3>Cardio &amp; Running</h3>
-            <span>30 min &bull; Endurance</span>
-          </div>
-        </div>
-        <i class="fa-solid fa-chevron-right chevron"></i>
-      </div>
-
-      <div class="plan-card">
-        <div class="plan-left">
-          <div class="icon-box icon-boxing"><i class="fa-solid fa-hand-fist"></i></div>
-          <div class="plan-details">
-            <h3>Boxing</h3>
-            <span>25 min &bull; Conditioning</span>
-          </div>
-        </div>
-        <i class="fa-solid fa-chevron-right chevron"></i>
-      </div>
-
-      <div class="plan-card">
-        <div class="plan-left">
-          <div class="icon-box icon-core"><i class="fa-solid fa-child-reaching"></i></div>
-          <div class="plan-details">
-            <h3>Core &amp; Abs</h3>
-            <span>20 min &bull; Core strength</span>
-          </div>
-        </div>
-        <i class="fa-solid fa-chevron-right chevron"></i>
-      </div>
-
-      <div class="plan-card">
-        <div class="plan-left">
-          <div class="icon-box icon-calis"><i class="fa-solid fa-person-snowboarding"></i></div>
-          <div class="plan-details">
-            <h3>Calisthenics</h3>
-            <span>35 min &bull; Bodyweight</span>
-          </div>
-        </div>
-        <i class="fa-solid fa-chevron-right chevron"></i>
-      </div>
-    </section>
-
-    <!-- Weekly Goal -->
-    <div class="goal-card">
-      <div class="goal-header">Weekly goal</div>
-      <div class="progress-bar">
-        <div class="progress-fill" style="width: 0%;"></div>
-      </div>
-      <div class="goal-caption">0 of 5 workouts completed</div>
+      <div class="section-label">Recommended Workouts</div>
+      <div class="plan-list" id="home-plan-list"></div>
     </div>
   </div>
 
-  <!-- Bottom Bar -->
+  <!-- ================= 2. WORKOUT LIST VIEW ================= -->
+  <div id="workout-view" class="view active">
+    <div class="container">
+      <h1 class="page-title">Workout</h1>
+      <p class="page-subtitle">Train hard. Get stronger.</p>
+
+      <div class="section-label accent">YOUR TRAINING PLANS</div>
+      <section class="plan-list" id="workout-plan-list"></section>
+
+      <div class="goal-card">
+        <div class="goal-header">Weekly goal</div>
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" id="weekly-goal-bar"></div>
+        </div>
+        <div class="goal-caption" id="weekly-goal-caption">0 of 5 workouts completed</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 3. ACTIVITY VIEW ================= -->
+  <div id="activity-view" class="view">
+    <div class="container">
+      <h1 class="page-title">Activity</h1>
+      <p class="page-subtitle">Your fitness journey at a glance</p>
+
+      <div class="activity-list">
+        <div class="activity-row">
+          <div class="activity-left">
+            <i class="fa-solid fa-dumbbell"></i>
+            <span>Completed Workouts</span>
+          </div>
+          <div class="activity-value" id="activity-completed-count">1</div>
+        </div>
+
+        <div class="activity-row">
+          <div class="activity-left">
+            <i class="fa-solid fa-flag"></i>
+            <span>Weekly Goal</span>
+          </div>
+          <div class="activity-value" id="activity-goal-ratio">1/5</div>
+        </div>
+
+        <div class="activity-row">
+          <div class="activity-left">
+            <i class="fa-solid fa-arrow-trend-up"></i>
+            <span>Consistency</span>
+          </div>
+          <div class="activity-value highlight">Keep going!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 4. PROFILE VIEW ================= -->
+  <div id="profile-view" class="view">
+    <div class="container">
+      <h1 class="page-title">Profile</h1>
+
+      <div class="profile-hero">
+        <div class="profile-avatar">
+          <i class="fa-solid fa-user"></i>
+        </div>
+        <h3>Fitness Champion</h3>
+        <p>Your journey starts here</p>
+      </div>
+
+      <div class="profile-menu">
+        <div class="profile-item">
+          <div class="profile-item-left">
+            <i class="fa-regular fa-user"></i>
+            <span>Personal Details</span>
+          </div>
+          <i class="fa-solid fa-chevron-right profile-chevron"></i>
+        </div>
+
+        <div class="profile-item">
+          <div class="profile-item-left">
+            <i class="fa-solid fa-flag"></i>
+            <span>Fitness Goals</span>
+          </div>
+          <i class="fa-solid fa-chevron-right profile-chevron"></i>
+        </div>
+
+        <div class="profile-item">
+          <div class="profile-item-left">
+            <i class="fa-regular fa-bell"></i>
+            <span>Notifications</span>
+          </div>
+          <i class="fa-solid fa-chevron-right profile-chevron"></i>
+        </div>
+
+        <div class="profile-item">
+          <div class="profile-item-left">
+            <i class="fa-solid fa-gear"></i>
+            <span>Settings</span>
+          </div>
+          <i class="fa-solid fa-chevron-right profile-chevron"></i>
+        </div>
+
+        <div class="profile-item">
+          <div class="profile-item-left">
+            <i class="fa-solid fa-circle-info"></i>
+            <span>About FitTrack</span>
+          </div>
+          <i class="fa-solid fa-chevron-right profile-chevron"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 5. EXERCISE DETAIL VIEW ================= -->
+  <div id="detail-view" class="view">
+    <div class="container">
+      <div class="detail-nav">
+        <button class="back-btn" onclick="navigateBack()"><i class="fa-solid fa-arrow-left"></i></button>
+        <h2 id="detail-title">Strength Training</h2>
+      </div>
+
+      <div class="detail-hero">
+        <div class="detail-hero-icon" id="detail-hero-icon"></div>
+        <h3 id="detail-hero-name">Strength Training</h3>
+        <p id="detail-hero-desc">45 min &bull; Full body</p>
+      </div>
+
+      <div class="section-label">Your Exercises</div>
+      <div class="exercise-list" id="exercise-list"></div>
+
+      <div class="detail-progress-bar">
+        <div class="detail-progress-fill" id="detail-progress-fill"></div>
+      </div>
+      <div class="exercise-count-caption" id="detail-count-caption">0 / 6 exercises completed</div>
+
+      <button id="complete-btn" class="complete-btn" onclick="completeCurrentWorkout()">Complete Workout</button>
+    </div>
+  </div>
+
+  <!-- ================= BOTTOM NAVIGATION ================= -->
   <nav class="bottom-nav">
-    <a href="#home" class="nav-item">
-      <i class="fa-solid fa-house"></i>
+    <div class="nav-item" onclick="switchTab('home-view', this)">
+      <div class="nav-icon-wrapper">
+        <i class="fa-solid fa-house"></i>
+      </div>
       <span>Home</span>
-    </a>
-    <a href="#workout" class="nav-item active">
+    </div>
+    <div class="nav-item active" onclick="switchTab('workout-view', this)">
       <div class="nav-icon-wrapper">
         <i class="fa-solid fa-dumbbell"></i>
       </div>
       <span>Workout</span>
-    </a>
-    <a href="#activity" class="nav-item">
-      <i class="fa-solid fa-chart-simple"></i>
+    </div>
+    <div class="nav-item" onclick="switchTab('activity-view', this)">
+      <div class="nav-icon-wrapper">
+        <i class="fa-solid fa-chart-simple"></i>
+      </div>
       <span>Activity</span>
-    </a>
-    <a href="#profile" class="nav-item">
-      <i class="fa-regular fa-user"></i>
+    </div>
+    <div class="nav-item" onclick="switchTab('profile-view', this)">
+      <div class="nav-icon-wrapper">
+        <i class="fa-regular fa-user"></i>
+      </div>
       <span>Profile</span>
-    </a>
+    </div>
   </nav>
 
+  <script>
+    const workoutsData = [
+      {
+        id: "strength",
+        title: "Strength Training",
+        subtitle: "45 min • Full body",
+        icon: "fa-dumbbell",
+        iconClass: "icon-strength",
+        color: "#b4f34d",
+        completed: false,
+        exercises: [
+          { name: "Push Ups - 3 × 15", done: false },
+          { name: "Squats - 3 × 15", done: false },
+          { name: "Dumbbell Press - 3 × 12", done: false },
+          { name: "Shoulder Press - 3 × 12", done: false },
+          { name: "Dumbbell Rows - 3 × 12", done: false },
+          { name: "Plank - 3 × 45 sec", done: false }
+        ]
+      },
+      {
+        id: "cardio",
+        title: "Cardio & Running",
+        subtitle: "30 min • Endurance",
+        icon: "fa-person-running",
+        iconClass: "icon-cardio",
+        color: "#f59e0b",
+        completed: false,
+        exercises: [
+          { name: "Jumping Jacks - 3 × 30", done: false },
+          { name: "Jogging - 10 min", done: false },
+          { name: "High Knees - 3 × 30 sec", done: false },
+          { name: "Mountain Climbers - 3 × 20", done: false },
+          { name: "Burpees - 3 × 10", done: false }
+        ]
+      },
+      {
+        id: "boxing",
+        title: "Boxing",
+        subtitle: "25 min • Conditioning",
+        icon: "fa-hand-fist",
+        iconClass: "icon-boxing",
+        color: "#ef4444",
+        completed: true,
+        exercises: [
+          { name: "Warm Up - 5 min", done: true },
+          { name: "Jab Practice - 3 rounds", done: true },
+          { name: "Cross Punch - 3 rounds", done: true },
+          { name: "Hook Practice - 3 rounds", done: true },
+          { name: "Shadow Boxing - 5 min", done: true }
+        ]
+      },
+      {
+        id: "core",
+        title: "Core & Abs",
+        subtitle: "20 min • Core strength",
+        icon: "fa-child-reaching",
+        iconClass: "icon-core",
+        color: "#06b6d4",
+        completed: false,
+        exercises: [
+          { name: "Plank - 3 × 45 sec", done: false },
+          { name: "Crunches - 3 × 20", done: false },
+          { name: "Leg Raises - 3 × 12", done: false },
+          { name: "Bicycle Crunches - 3 × 20", done: false },
+          { name: "Russian Twists - 3 × 20", done: false }
+        ]
+      },
+      {
+        id: "calis",
+        title: "Calisthenics",
+        subtitle: "35 min • Bodyweight",
+        icon: "fa-person-snowboarding",
+        iconClass: "icon-calis",
+        color: "#d946ef",
+        completed: false,
+        exercises: [
+          { name: "Pull Ups - 3 × 8", done: false },
+          { name: "Push Ups - 3 × 15", done: false },
+          { name: "Dips - 3 × 10", done: false },
+          { name: "Bodyweight Squats - 3 × 20", done: false },
+          { name: "Plank - 3 × 45 sec", done: false }
+        ]
+      }
+    ];
+
+    let currentWorkout = null;
+    let previousTabId = "workout-view";
+
+    function switchTab(viewId, element) {
+      document.querySelectorAll(".view").forEach((v) => v.classList.remove("active"));
+      document.querySelectorAll(".nav-item").forEach((item) => item.classList.remove("active"));
+
+      document.getElementById(viewId).classList.add("active");
+      if (element) {
+        element.classList.add("active");
+      }
+      previousTabId = viewId;
+      window.scrollTo(0, 0);
+    }
+
+    function renderWorkoutLists() {
+      const workoutContainer = document.getElementById("workout-plan-list");
+      const homeContainer = document.getElementById("home-plan-list");
+      workoutContainer.innerHTML = "";
+      homeContainer.innerHTML = "";
+
+      let completedCount = 0;
+
+      workoutsData.forEach((workout) => {
+        if (workout.completed) completedCount++;
+
+        // Render in Workout View
+        const cardWorkout = createWorkoutCard(workout, true);
+        workoutContainer.appendChild(cardWorkout);
+
+        // Render in Home View
+        const cardHome = createWorkoutCard(workout, false);
+        homeContainer.appendChild(cardHome);
+      });
+
+      // Update workout tab progress bar
+      const percent = (completedCount / workoutsData.length) * 100;
+      document.getElementById("weekly-goal-bar").style.width = percent + "%";
+      document.getElementById("weekly-goal-caption").textContent = `${completedCount} of ${workoutsData.length} workouts completed`;
+
+      // Update Activity view
+      document.getElementById("activity-completed-count").textContent = completedCount;
+      document.getElementById("activity-goal-ratio").textContent = `${completedCount}/${workoutsData.length}`;
+    }
+
+    function createWorkoutCard(workout, showCheckmark) {
+      const card = document.createElement("div");
+      card.className = "plan-card";
+      card.onclick = () => openWorkoutDetail(workout.id);
+
+      const rightIcon = (showCheckmark && workout.completed)
+        ? `<div class="plan-right-icon completed"><i class="fa-solid fa-circle-check"></i></div>`
+        : `<div class="plan-right-icon"><i class="fa-solid fa-chevron-right"></i></div>`;
+
+      card.innerHTML = `
+        <div class="plan-left">
+          <div class="icon-box ${workout.iconClass}">
+            <i class="fa-solid ${workout.icon}"></i>
+          </div>
+          <div class="plan-details">
+            <h3>${workout.title}</h3>
+            <span>${workout.subtitle}</span>
+          </div>
+        </div>
+        ${rightIcon}
+      `;
+      return card;
+    }
+
+    function openWorkoutDetail(id) {
+      currentWorkout = workoutsData.find((w) => w.id === id);
+      if (!currentWorkout) return;
+
+      document.getElementById("detail-title").textContent = currentWorkout.title;
+      document.getElementById("detail-hero-name").textContent = currentWorkout.title;
+      document.getElementById("detail-hero-desc").textContent = currentWorkout.subtitle;
+
+      const heroIcon = document.getElementById("detail-hero-icon");
+      heroIcon.innerHTML = `<i class="fa-solid ${currentWorkout.icon}"></i>`;
+      heroIcon.style.color = currentWorkout.color;
+
+      renderExercises();
+
+      document.querySelectorAll(".view").forEach((v) => v.classList.remove("active"));
+      document.getElementById("detail-view").classList.add("active");
+      window.scrollTo(0, 0);
+    }
+
+    function renderExercises() {
+      const list = document.getElementById("exercise-list");
+      list.innerHTML = "";
+
+      let doneCount = 0;
+
+      currentWorkout.exercises.forEach((ex, idx) => {
+        if (ex.done) doneCount++;
+
+        const row = document.createElement("div");
+        row.className = `exercise-item ${ex.done ? "done" : ""}`;
+        row.onclick = () => toggleExercise(idx);
+
+        row.innerHTML = `
+          <span>${ex.name}</span>
+          <div class="checkbox">
+            <i class="${ex.done ? 'fa-solid fa-square-check' : 'fa-regular fa-square'}"></i>
+          </div>
+        `;
+        list.appendChild(row);
+      });
+
+      const total = currentWorkout.exercises.length;
+      const percent = total > 0 ? (doneCount / total) * 100 : 0;
+      document.getElementById("detail-progress-fill").style.width = percent + "%";
+      document.getElementById("detail-count-caption").textContent = `${doneCount} / ${total} exercises completed`;
+
+      const completeBtn = document.getElementById("complete-btn");
+      if (doneCount === total && total > 0) {
+        completeBtn.classList.add("enabled");
+      } else {
+        completeBtn.classList.remove("enabled");
+      }
+    }
+
+    function toggleExercise(index) {
+      currentWorkout.exercises[index].done = !currentWorkout.exercises[index].done;
+      renderExercises();
+    }
+
+    function completeCurrentWorkout() {
+      const allDone = currentWorkout.exercises.every((ex) => ex.done);
+      if (!allDone) return;
+
+      currentWorkout.completed = true;
+      navigateBack();
+    }
+
+    function navigateBack() {
+      document.querySelectorAll(".view").forEach((v) => v.classList.remove("active"));
+      document.getElementById(previousTabId).classList.add("active");
+      renderWorkoutLists();
+      window.scrollTo(0, 0);
+    }
+
+    // Initialize application
+    renderWorkoutLists();
+  </script>
 </body>
 </html>
